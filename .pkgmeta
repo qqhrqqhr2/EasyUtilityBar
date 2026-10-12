@@ -1,0 +1,6 @@
+package-as: EasyUtilityBar
+ignore:
+  - .github
+  - README.md
+  - SETUP_KO.md
+  - .gitignore
