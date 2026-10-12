@@ -1,0 +1,7 @@
+## Interface: 16001
+## Title: EasyUtilityBar
+## Notes: Utility items, professions and class skills for WoW Forever
+## Version: 0.5.5
+## SavedVariables: EUB_DB
+Locales\Locales.lua
+Core.lua
