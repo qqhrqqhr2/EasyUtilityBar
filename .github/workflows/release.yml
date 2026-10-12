@@ -15,13 +15,12 @@ jobs:
           fetch-depth: 0
       - name: Validate addon and configure CurseForge
         env:
-          CF_PROJECT_ID: ${{ secrets.CF_PROJECT_ID }}
+          CF_PROJECT_ID: '1741884'
           CF_API_KEY: ${{ secrets.CF_API_KEY }}
         run: |
           test -f EasyUtilityBar.toc
           test -f Core.lua
           test -f Locales/Locales.lua
-          test -n "$CF_PROJECT_ID" || { echo "Missing CF_PROJECT_ID secret"; exit 1; }
           test -n "$CF_API_KEY" || { echo "Missing CF_API_KEY secret"; exit 1; }
           echo "## X-Curse-Project-ID: $CF_PROJECT_ID" >> EasyUtilityBar.toc
       - name: Publish GitHub release and CurseForge package
