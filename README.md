@@ -10,11 +10,13 @@ A compact, multilingual utility bar addon for WoW Forever (Interface 16001).
 - Move with Ctrl + left-drag; `/eub` or `/fub` for options.
 
 ## Installation
-Extract the release ZIP to `World of Warcraft/_classic_/Interface/AddOns/` so that `EasyUtilityBar/EasyUtilityBar.toc` exists.
+Extract the release ZIP into your WoW Forever `Interface/AddOns/` directory, so that `EasyUtilityBar/EasyUtilityBar.toc` exists.
 
 ## Publishing
-A tag `vX.Y.Z` triggers GitHub Actions / BigWigs packager to publish GitHub Releases and CurseForge.
-Set repository secrets `CF_API_KEY` and `CF_PROJECT_ID` after creating the CurseForge project. The first CurseForge project submission must be approved separately.
-Source files should be at repository root (e.g. `EasyUtilityBar.toc`, `Core.lua`, `Locales/`, `Media/`), not nested in an `EasyUtilityBar` folder. The packager creates that folder in the ZIP.
+This repository targets CurseForge project **1741884**. The `.github/workflows/release.yml` workflow runs for tags matching `v*` and uses GitHub Actions secrets `CF_API_KEY` and `CF_PROJECT_ID`.
+
+Source files must be at repository root (e.g. `EasyUtilityBar.toc`, `Core.lua`, `Locales/`, `Media/`); the packager makes the `EasyUtilityBar` addon directory in the ZIP.
+
+**Do not create a release tag until the addon source is present and the secrets are configured.** CurseForge may require separate project/file approval.
 
 Support: https://buymeacoffee.com/qqhrqqhr2
