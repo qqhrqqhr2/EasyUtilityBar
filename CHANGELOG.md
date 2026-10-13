@@ -1,4 +1,4 @@
-## Unreleased (testing)
+## 0.5.6 (testing)
 - Fix: engineering devices are now recognized (tooltip "Requires Engineering" or Devices subtype); explosives go to Bombs.
 - Fix: item counts show the total of all stacks, and update live (also in combat).
 - Fix: equippable items in bags are no longer listed (clicking them would equip them).
