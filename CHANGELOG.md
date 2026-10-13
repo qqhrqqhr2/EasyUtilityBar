@@ -1,4 +1,4 @@
-## 0.5.6 (testing)
+## 0.5.6
 - Fix: engineering devices are now recognized (tooltip "Requires Engineering" or Devices subtype); explosives go to Bombs.
 - Fix: no Lua errors when the client returns protected (secret) cooldown or usability values in combat; the cooldown swipe is drawn from them directly.
 - Fix: item counts show the total of all stacks, and update live (also in combat).
