@@ -10,6 +10,7 @@
 - New: opacity setting (30–100%) and "Show only on mouseover" fade.
 - New: the Equipped Items group now includes every worn slot with a Use effect (engineering helms, boots, gloves...), not only trinkets.
 - Design: hover glow and pressed state on icons, item quality border colors, more compact settings window.
+- Releases are now published automatically from CHANGELOG.md.
 - Settings panel, chat messages and slash replies follow the selected language; version is read from the TOC.
 
 ## 0.5.5
