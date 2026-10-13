@@ -497,6 +497,11 @@ local function applyEntry(b,d,size)
  b.hideBtn:Hide()
  b.lastStart=nil;b.lastDuration=nil;b.lastCount=nil;b:Show()
 end
+-- Newer clients hand addons "secret" values in combat (cooldowns, usability...).
+-- They may be passed straight to UI widgets but never compared or computed with.
+local function isSecret(v)
+ return type(issecretvalue)=="function" and issecretvalue(v) and true or false
+end
 -- Read item/spell cooldowns without assuming one specific Forever API generation.
 local function cooldownInfo(d)
  local start,duration,enabled
@@ -525,26 +530,31 @@ local function cooldownInfo(d)
    if ok then start,duration,enabled=a,b,c end
   end
  end
- return tonumber(start) or 0,tonumber(duration) or 0,enabled
+ if isSecret(start) or isSecret(duration) then return start,duration,enabled,true end
+ return tonumber(start) or 0,tonumber(duration) or 0,enabled,false
+end
+local function flag(v)
+ if isSecret(v) then return nil end
+ return v==true or v==1
 end
 local function isUsable(d)
  if d.type=="spell" then
   if C_Spell and type(C_Spell.IsSpellUsable)=="function" then
    local ok,a,b=pcall(C_Spell.IsSpellUsable,d.id)
-   if ok then return a==true or a==1,b==true or b==1 end
+   if ok then local u=flag(a);if u==nil then return true,false end;return u,flag(b)==true end
   end
   if type(IsUsableSpell)=="function" then
    local ok,a,b=pcall(IsUsableSpell,d.id)
-   if ok then return a==true or a==1,b==true or b==1 end
+   if ok then local u=flag(a);if u==nil then return true,false end;return u,flag(b)==true end
   end
  else
   if C_Item and type(C_Item.IsUsableItem)=="function" then
    local ok,a,b=pcall(C_Item.IsUsableItem,d.id)
-   if ok then return a==true or a==1,b==true or b==1 end
+   if ok then local u=flag(a);if u==nil then return true,false end;return u,flag(b)==true end
   end
   if type(IsUsableItem)=="function" then
    local ok,a,b=pcall(IsUsableItem,d.id)
-   if ok then return a==true or a==1,b==true or b==1 end
+   if ok then local u=flag(a);if u==nil then return true,false end;return u,flag(b)==true end
   end
  end
  return true,false -- unknown API: avoid falsely dimming everything
@@ -554,12 +564,12 @@ local function activeFormSpell(d)
  if d.type~="spell" or d.category~="forms" then return false end
  if type(GetShapeshiftForm)~="function" or type(GetShapeshiftFormInfo)~="function" then return false end
  local ok,idx=pcall(GetShapeshiftForm)
- if not ok or not idx or idx<=0 then return false end
+ if not ok or not idx or isSecret(idx) or idx<=0 then return false end
  local success,texture,active,castable,spellID=pcall(GetShapeshiftFormInfo,idx)
  if not success then return false end
- if spellID and tonumber(spellID)==tonumber(d.id) then return true end
+ if spellID and not isSecret(spellID) and tonumber(spellID)==tonumber(d.id) then return true end
  -- Some client builds return a stance texture rather than a spell ID.
- if texture and d.icon and tostring(texture)==tostring(d.icon) then return true end
+ if texture and d.icon and not isSecret(texture) and tostring(texture)==tostring(d.icon) then return true end
  return false
 end
 updateVisuals=function()
@@ -570,11 +580,20 @@ updateVisuals=function()
    -- Live bag count: also updates in combat, when the layout itself is frozen.
    if b.entry.type=="item" and not b.entry.inventorySlot then
     local n=itemCount(b.entry.id)
-    if n and n~=b.lastCount then b.lastCount=n;b.count:SetText(n>1 and n or "") end
+    if n and not isSecret(n) and n~=b.lastCount then b.lastCount=n;b.count:SetText(n>1 and n or "") end
    end
-   local start,duration,enabled=cooldownInfo(b.entry)
-   local onCD=start>0 and duration>0 and (start+duration)>now+0.05
-   if onCD then
+   local start,duration,enabled,secret=cooldownInfo(b.entry)
+   local onCD=false
+   if secret then
+    -- Hand secret values straight to the cooldown widget; it draws (or clears) itself.
+    if b.cooldown.SetCooldown then pcall(b.cooldown.SetCooldown,b.cooldown,start,duration) end
+    b.cooldown:Show();b.lastStart,b.lastDuration=nil,nil
+   else
+    onCD=start>0 and duration>0 and (start+duration)>now+0.05
+   end
+   if secret then
+    -- handled above
+   elseif onCD then
     if b.lastStart~=start or b.lastDuration~=duration then
      if CooldownFrame_Set then CooldownFrame_Set(b.cooldown,start,duration,1)
      elseif b.cooldown.SetCooldown then b.cooldown:SetCooldown(start,duration) end
