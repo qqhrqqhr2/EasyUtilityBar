@@ -1,4 +1,4 @@
-## Unreleased (0.5.7 testing)
+## 0.5.7
 - New: "Food, potions, bandages: best only" option — keeps the best usable item of each kind (healing potion, mana potion, food, drink, buff food); items above your level are skipped.
 - New: Travel group for hearthstones, mount items and mount summon spells.
 - New: "Grow upward" option, so a toolbar placed at the bottom of the screen extends upward.
