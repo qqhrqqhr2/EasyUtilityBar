@@ -3,8 +3,9 @@
 A compact, multilingual utility bar addon for WoW Forever (Interface 16001).
 
 ## Features
-- Groups usable bag items: bombs, engineering, potions, food, bandages, camping, quest items, equipped on-use items and more.
+- Groups usable bag items: bombs, engineering, potions, food, bandages, camping, travel (hearthstone, mounts), quest items, equipped on-use items and more.
 - Profession skills, class utility spells and shapeshifting/stances.
+- Best-only mode for food, potions and bandages; grow-upward layout.
 - Collapsible categories with persistent state; icon size, column count, opacity and mouseover fade.
 - Hide individual icons (reveal the outline via the title, then click an icon's x while unlocked).
 - Korean, English, Simplified/Traditional Chinese, Russian, German and Spanish.

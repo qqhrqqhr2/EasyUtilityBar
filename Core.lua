@@ -20,16 +20,16 @@ local optionsCategory, optionsPanel
 local hoverUIActive=false
 -- Item IDs whose info was not cached yet; GET_ITEM_INFO_RECEIVED re-sorts them.
 local waitingItems={}
-local order={"bomb","engineering","potion","food","bandage","camping","quest","trinket","other","profession","forms","classskill"}
-local defaults={size=36,columns=8,locked=false,visible=true,opacity=1,fade=false,categories={},collapsed={},hidden={},language="auto",position=nil,manualWidth=nil,manualHeight=nil,unified=false,spellRanks="highest"}
+local order={"bomb","engineering","potion","food","bandage","camping","travel","quest","trinket","other","profession","forms","classskill"}
+local defaults={size=36,columns=8,locked=false,visible=true,opacity=1,fade=false,categories={},collapsed={},hidden={},language="auto",position=nil,manualWidth=nil,manualHeight=nil,unified=false,spellRanks="highest",bestOnly=false,growUp=false}
 local groupNames={
- koKR={bomb="폭탄",engineering="기계공학",potion="물약",food="음식·음료",bandage="붕대",camping="야영",quest="퀘스트",trinket="착용 장비",other="기타",profession="전문기술",forms="변신·태세",classskill="직업 스킬"},
- enUS={bomb="Bombs",engineering="Engineering",potion="Potions",food="Food & Drink",bandage="Bandages",camping="Camping",quest="Quest Items",trinket="Equipped Items",other="Other",profession="Professions",forms="Forms & Stances",classskill="Class Skills"},
- zhCN={bomb="炸弹",engineering="工程学",potion="药水",food="食物与饮料",bandage="绷带",camping="露营",quest="任务",trinket="已装备物品",other="其他",profession="专业技能",forms="形态与姿态",classskill="职业技能"},
- zhTW={bomb="炸彈",engineering="工程學",potion="藥水",food="食物與飲料",bandage="繃帶",camping="露營",quest="任務",trinket="已裝備物品",other="其他",profession="專業技能",forms="形態與姿態",classskill="職業技能"},
- ruRU={bomb="Бомбы",engineering="Инженерия",potion="Зелья",food="Еда и напитки",bandage="Бинты",camping="Лагерь",quest="Задания",trinket="Экипировка",other="Прочее",profession="Профессии",forms="Облики и стойки",classskill="Умения класса"},
- deDE={bomb="Bomben",engineering="Ingenieurskunst",potion="Tränke",food="Essen & Trinken",bandage="Verbände",camping="Lager",quest="Questgegenstände",trinket="Ausrüstung",other="Sonstiges",profession="Berufe",forms="Gestalten & Haltungen",classskill="Klassenfähigkeiten"},
- esES={bomb="Bombas",engineering="Ingeniería",potion="Pociones",food="Comida y bebida",bandage="Vendas",camping="Campamento",quest="Objetos de misión",trinket="Equipo",other="Otros",profession="Profesiones",forms="Formas y actitudes",classskill="Habilidades de clase"}}
+ koKR={bomb="폭탄",engineering="기계공학",potion="물약",food="음식·음료",bandage="붕대",camping="야영",travel="이동",quest="퀘스트",trinket="착용 장비",other="기타",profession="전문기술",forms="변신·태세",classskill="직업 스킬"},
+ enUS={bomb="Bombs",engineering="Engineering",potion="Potions",food="Food & Drink",bandage="Bandages",camping="Camping",travel="Travel",quest="Quest Items",trinket="Equipped Items",other="Other",profession="Professions",forms="Forms & Stances",classskill="Class Skills"},
+ zhCN={bomb="炸弹",engineering="工程学",potion="药水",food="食物与饮料",bandage="绷带",camping="露营",travel="旅行",quest="任务",trinket="已装备物品",other="其他",profession="专业技能",forms="形态与姿态",classskill="职业技能"},
+ zhTW={bomb="炸彈",engineering="工程學",potion="藥水",food="食物與飲料",bandage="繃帶",camping="露營",travel="旅行",quest="任務",trinket="已裝備物品",other="其他",profession="專業技能",forms="形態與姿態",classskill="職業技能"},
+ ruRU={bomb="Бомбы",engineering="Инженерия",potion="Зелья",food="Еда и напитки",bandage="Бинты",camping="Лагерь",travel="Путешествия",quest="Задания",trinket="Экипировка",other="Прочее",profession="Профессии",forms="Облики и стойки",classskill="Умения класса"},
+ deDE={bomb="Bomben",engineering="Ingenieurskunst",potion="Tränke",food="Essen & Trinken",bandage="Verbände",camping="Lager",travel="Reisen",quest="Questgegenstände",trinket="Ausrüstung",other="Sonstiges",profession="Berufe",forms="Gestalten & Haltungen",classskill="Klassenfähigkeiten"},
+ esES={bomb="Bombas",engineering="Ingeniería",potion="Pociones",food="Comida y bebida",bandage="Vendas",camping="Campamento",travel="Viaje",quest="Objetos de misión",trinket="Equipo",other="Otros",profession="Profesiones",forms="Formas y actitudes",classskill="Habilidades de clase"}}
 local languageOptions={{"auto","Auto"},{"koKR","한국어"},{"enUS","English"},{"zhCN","简体中文"},{"zhTW","繁體中文"},{"ruRU","Русский"},{"deDE","Deutsch"},{"esES","Español"}}
 local uiStrings={
  koKR={subtitle="설정 · 제목 드래그로 이동",categories="표시할 분류",layout="아이콘 배치",unified="분류 없이 모든 아이콘 한곳에 표시",language="언어",controls="단축바 조절",size="아이콘 크기",columns="한 줄 개수",unlock="잠금 해제",lock="단축바 잠금",hide="단축바 숨김",show="단축바 표시",expand="전체 펼치기",collapse="전체 접기",refresh="새로고침",donate="후원하기 · 주소 복사",copy="후원 주소 · Ctrl + C로 복사",hint="단축바 이동: Ctrl + 제목 좌클릭 드래그  |  크기: 오른쪽 아래",spellRanks="스킬 단계",allRanks="모든 단계",highestRank="최고 단계",foldTip="전체 분류 접기 / 펼치기",gearTip="설정 열기",lockTip="단축바 잠금 / 해제"},
@@ -42,13 +42,13 @@ local uiStrings={
 }
 -- Strings added after 0.5.5 (options, icon hiding, chat messages, AddOns panel).
 local extraStrings={
- koKR={opacity="불투명도",fade="마우스 올릴 때만 표시",restore="숨긴 아이콘 복원",hideIcon="이 아이콘 숨기기",hideHint="아이콘 숨기기: 잠금 해제 상태에서 아이콘의 x 클릭",loaded="로드 완료. /eub",lockedMsg="단축바 잠금",unlockedMsg="단축바 잠금 해제",waiting="초기화 대기 중",panelDesc="가방 아이템 / 전문기술 / 직업 스킬 단축바",panelOpen="설정 열기",panelHint="게임 화면의 톱니바퀴 버튼이나 /eub 명령어로도 열 수 있습니다."},
- enUS={opacity="Opacity",fade="Show only on mouseover",restore="Restore hidden icons",hideIcon="Hide this icon",hideHint="Hide an icon: click its x while unlocked",loaded="Loaded. /eub",lockedMsg="Toolbar locked",unlockedMsg="Toolbar unlocked",waiting="Waiting for initialization",panelDesc="Toolbar for bag items, professions and class skills",panelOpen="Open settings",panelHint="You can also open it with the gear button or /eub."},
- zhCN={opacity="不透明度",fade="仅鼠标悬停时显示",restore="恢复隐藏的图标",hideIcon="隐藏此图标",hideHint="隐藏图标：解锁后点击图标上的 x",loaded="已加载。/eub",lockedMsg="工具栏已锁定",unlockedMsg="工具栏已解锁",waiting="等待初始化",panelDesc="背包物品 / 专业技能 / 职业技能工具栏",panelOpen="打开设置",panelHint="也可以通过齿轮按钮或 /eub 打开。"},
- zhTW={opacity="不透明度",fade="僅滑鼠懸停時顯示",restore="恢復隱藏的圖示",hideIcon="隱藏此圖示",hideHint="隱藏圖示：解鎖後點擊圖示上的 x",loaded="已載入。/eub",lockedMsg="工具列已鎖定",unlockedMsg="工具列已解鎖",waiting="等待初始化",panelDesc="背包物品 / 專業技能 / 職業技能工具列",panelOpen="開啟設定",panelHint="也可以透過齒輪按鈕或 /eub 開啟。"},
- ruRU={opacity="Непрозрачность",fade="Только при наведении",restore="Вернуть скрытые значки",hideIcon="Скрыть этот значок",hideHint="Скрыть значок: нажмите x (панель разблокирована)",loaded="Загружено. /eub",lockedMsg="Панель заблокирована",unlockedMsg="Панель разблокирована",waiting="Ожидание инициализации",panelDesc="Панель предметов, профессий и умений класса",panelOpen="Открыть настройки",panelHint="Также можно открыть кнопкой-шестерёнкой или командой /eub."},
- deDE={opacity="Deckkraft",fade="Nur bei Mauskontakt anzeigen",restore="Ausgeblendete Symbole zeigen",hideIcon="Dieses Symbol ausblenden",hideHint="Symbol ausblenden: entsperrt auf x klicken",loaded="Geladen. /eub",lockedMsg="Leiste gesperrt",unlockedMsg="Leiste entsperrt",waiting="Warte auf Initialisierung",panelDesc="Leiste für Taschengegenstände, Berufe und Klassenfähigkeiten",panelOpen="Einstellungen öffnen",panelHint="Auch über das Zahnrad oder /eub erreichbar."},
- esES={opacity="Opacidad",fade="Mostrar solo al pasar el ratón",restore="Restaurar iconos ocultos",hideIcon="Ocultar este icono",hideHint="Ocultar icono: pulsa su x con la barra desbloqueada",loaded="Cargado. /eub",lockedMsg="Barra bloqueada",unlockedMsg="Barra desbloqueada",waiting="Esperando inicialización",panelDesc="Barra de objetos, profesiones y habilidades de clase",panelOpen="Abrir opciones",panelHint="También puedes abrirla con el engranaje o /eub."},
+ koKR={bestOnly="음식·물약·붕대는 최고 등급만 표시",growUp="위로 펼치기 (화면 아래쪽에 둘 때)",opacity="불투명도",fade="마우스 올릴 때만 표시",restore="숨긴 아이콘 복원",hideIcon="이 아이콘 숨기기",hideHint="아이콘 숨기기: 잠금 해제 상태에서 아이콘의 x 클릭",loaded="로드 완료. /eub",lockedMsg="단축바 잠금",unlockedMsg="단축바 잠금 해제",waiting="초기화 대기 중",panelDesc="가방 아이템 / 전문기술 / 직업 스킬 단축바",panelOpen="설정 열기",panelHint="게임 화면의 톱니바퀴 버튼이나 /eub 명령어로도 열 수 있습니다."},
+ enUS={bestOnly="Food, potions, bandages: best only",growUp="Grow upward (for bottom placement)",opacity="Opacity",fade="Show only on mouseover",restore="Restore hidden icons",hideIcon="Hide this icon",hideHint="Hide an icon: click its x while unlocked",loaded="Loaded. /eub",lockedMsg="Toolbar locked",unlockedMsg="Toolbar unlocked",waiting="Waiting for initialization",panelDesc="Toolbar for bag items, professions and class skills",panelOpen="Open settings",panelHint="You can also open it with the gear button or /eub."},
+ zhCN={bestOnly="食物、药水、绷带只显示最佳",growUp="向上展开（放在屏幕下方时）",opacity="不透明度",fade="仅鼠标悬停时显示",restore="恢复隐藏的图标",hideIcon="隐藏此图标",hideHint="隐藏图标：解锁后点击图标上的 x",loaded="已加载。/eub",lockedMsg="工具栏已锁定",unlockedMsg="工具栏已解锁",waiting="等待初始化",panelDesc="背包物品 / 专业技能 / 职业技能工具栏",panelOpen="打开设置",panelHint="也可以通过齿轮按钮或 /eub 打开。"},
+ zhTW={bestOnly="食物、藥水、繃帶只顯示最佳",growUp="向上展開（放在螢幕下方時）",opacity="不透明度",fade="僅滑鼠懸停時顯示",restore="恢復隱藏的圖示",hideIcon="隱藏此圖示",hideHint="隱藏圖示：解鎖後點擊圖示上的 x",loaded="已載入。/eub",lockedMsg="工具列已鎖定",unlockedMsg="工具列已解鎖",waiting="等待初始化",panelDesc="背包物品 / 專業技能 / 職業技能工具列",panelOpen="開啟設定",panelHint="也可以透過齒輪按鈕或 /eub 開啟。"},
+ ruRU={bestOnly="Еда, зелья, бинты: только лучшее",growUp="Расти вверх (для низа экрана)",opacity="Непрозрачность",fade="Только при наведении",restore="Вернуть скрытые значки",hideIcon="Скрыть этот значок",hideHint="Скрыть значок: нажмите x (панель разблокирована)",loaded="Загружено. /eub",lockedMsg="Панель заблокирована",unlockedMsg="Панель разблокирована",waiting="Ожидание инициализации",panelDesc="Панель предметов, профессий и умений класса",panelOpen="Открыть настройки",panelHint="Также можно открыть кнопкой-шестерёнкой или командой /eub."},
+ deDE={bestOnly="Essen, Tränke, Verbände: nur das Beste",growUp="Nach oben wachsen (unten platziert)",opacity="Deckkraft",fade="Nur bei Mauskontakt anzeigen",restore="Ausgeblendete Symbole zeigen",hideIcon="Dieses Symbol ausblenden",hideHint="Symbol ausblenden: entsperrt auf x klicken",loaded="Geladen. /eub",lockedMsg="Leiste gesperrt",unlockedMsg="Leiste entsperrt",waiting="Warte auf Initialisierung",panelDesc="Leiste für Taschengegenstände, Berufe und Klassenfähigkeiten",panelOpen="Einstellungen öffnen",panelHint="Auch über das Zahnrad oder /eub erreichbar."},
+ esES={bestOnly="Comida, pociones, vendas: solo lo mejor",growUp="Crecer hacia arriba (abajo en pantalla)",opacity="Opacidad",fade="Mostrar solo al pasar el ratón",restore="Restaurar iconos ocultos",hideIcon="Ocultar este icono",hideHint="Ocultar icono: pulsa su x con la barra desbloqueada",loaded="Cargado. /eub",lockedMsg="Barra bloqueada",unlockedMsg="Barra desbloqueada",waiting="Esperando inicialización",panelDesc="Barra de objetos, profesiones y habilidades de clase",panelOpen="Abrir opciones",panelHint="También puedes abrirla con el engranaje o /eub."},
 }
 for lang,t in pairs(extraStrings) do for k,v in pairs(t) do uiStrings[lang][k]=v end end
 -- Lua's lower() only folds ASCII. Also fold Cyrillic capitals so Russian names
@@ -108,6 +108,13 @@ local function classify(name,typ,sub,tooltip)
   or s:find("camp tent",1,true) or s:find("露营",1,true)
   or s:find("露營",1,true) or s:find("篝火",1,true)
   or s:find("палатка",1,true) or s:find("костёр",1,true) then return "camping" end
+ -- Travel: hearthstone and mount items (reins, whistles, horns...).
+ if s:find("귀환석",1,true) or s:find("hearthstone",1,true) or s:find("炉石",1,true) or s:find("爐石",1,true)
+  or s:find("камень возвращения",1,true) or s:find("ruhestein",1,true) or s:find("piedra de hogar",1,true)
+  or s:find("고삐",1,true) or s:find("호루라기",1,true) or s:find("reins",1,true) or s:find("whistle",1,true)
+  or s:find("bridle",1,true) or s:find("horn of the",1,true)
+  or u=="mount" or u=="탈것" or u=="坐骑" or u=="坐騎" or u=="верховые животные" or u=="reittier" or u=="montura"
+  or tip:find("rideable",1,true) or tip:find("탈 수 있는",1,true) then return "travel" end
  if s:find("붕대",1,true) or s:find("bandage",1,true) then return "bandage" end
  if s:find("물약",1,true) or s:find("potion",1,true) or s:find("비약",1,true) or s:find("elixir",1,true) or s:find("flask",1,true) then return "potion" end
  if u:find("food",1,true) or u:find("음식",1,true) or s:find("빵",1,true) or s:find("음료",1,true) then return "food" end
@@ -163,11 +170,11 @@ end
 local function itemInfo(id)
  if type(GetItemInfo)=="function" then
   local ok,name,link,quality,level,minLevel,itemType,itemSubType=pcall(GetItemInfo,id)
-  if ok and name then return name,itemType,itemSubType,quality end
+  if ok and name then return name,itemType,itemSubType,quality,minLevel,level end
  end
  if C_Item and type(C_Item.GetItemInfo)=="function" then
   local ok,name,link,quality,level,minLevel,itemType,itemSubType=pcall(C_Item.GetItemInfo,id)
-  if ok and name then return name,itemType,itemSubType,quality end
+  if ok and name then return name,itemType,itemSubType,quality,minLevel,level end
  end
  return nil,nil,nil,nil
 end
@@ -240,6 +247,41 @@ local function isFormSpell(name,class)
  end
  return false
 end
+-- What a consumable restores, from its tooltip: keeps health and mana items
+-- (and buff food) apart when only the best of each kind is shown.
+local function effectKind(tip)
+ local t=lowerText(tip)
+ if t:find("well fed",1,true) or t:find("포만감",1,true) or t:find("进食充分",1,true) or t:find("進食充分",1,true) or t:find("сытость",1,true) then return "buff" end
+ local hp=t:find("health",1,true) or t:find("생명력",1,true) or t:find("生命",1,true) or t:find("здоровь",1,true) or t:find("gesundheit",1,true) or t:find("salud",1,true)
+ local mp=t:find("mana",1,true) or t:find("마나",1,true) or t:find("法力",1,true) or t:find("мана",1,true)
+ if hp and mp then return "both" elseif hp then return "health" elseif mp then return "mana" end
+ return nil
+end
+local bestCategories={food=true,potion=true,bandage=true}
+local function bestCandidate(d)
+ return d.type=="item" and not d.inventorySlot and bestCategories[d.category] and (d.effect or d.category=="bandage")
+end
+-- Keep the best usable item per category and effect (e.g. one healing potion,
+-- one mana potion, one drink). Items with an unknown effect are always kept.
+local function keepBest(out)
+ local level=(type(UnitLevel)=="function" and UnitLevel("player")) or 999
+ local function score(d)
+  if d.minLevel>level then return -1 end
+  return d.minLevel*10000+d.ilvl*10+math.min(d.count or 1,9)
+ end
+ local best={}
+ for i,d in ipairs(out) do
+  if bestCandidate(d) then
+   local key=d.category..":"..(d.effect or "")
+   if not best[key] or score(d)>score(out[best[key]]) then best[key]=i end
+  end
+ end
+ local kept={}
+ for i,d in ipairs(out) do
+  if not bestCandidate(d) or best[d.category..":"..(d.effect or "")]==i then kept[#kept+1]=d end
+ end
+ return kept
+end
 local function collect()
  local out={}
  local hidden=EUB_DB.hidden or {}
@@ -259,13 +301,14 @@ local function collect()
      else
       local hasUse,tip,firstLine=scanBagItem(bag,slot)
       if hasUse and not isEquippable(id) and not hidden["item:"..id] then
-       local name,typ,sub,quality=itemInfo(id)
+       local name,typ,sub,quality,minLevel,ilvl=itemInfo(id)
        -- Uncached items: use the tooltip's first line now and re-sort when info arrives.
        if not name or not typ then waitingItems[id]=true end
        name=name or firstLine
        local cat=classify(name,typ,sub,tip)
        if EUB_DB.categories[cat] then
-        out[#out+1]={type="item",id=id,icon=info.iconFileID,name=name or tostring(id),category=cat,count=stack,quality=quality or info.quality}
+        out[#out+1]={type="item",id=id,icon=info.iconFileID,name=name or tostring(id),category=cat,count=stack,quality=quality or info.quality,
+         minLevel=tonumber(minLevel) or 0,ilvl=tonumber(ilvl) or 0,effect=effectKind(tip)}
         itemAt[id]=#out
        else skipItem[id]=true end
       else skipItem[id]=true end
@@ -346,6 +389,8 @@ local function collect()
    end
    return false
   end
+  local mountSpells={"군마 소환","지옥마 소환","공포마 소환","summon warhorse","summon charger","summon felsteed","summon dreadsteed",
+   "召唤战马","召喚戰馬","召唤地狱战马","召喚地獄戰馬","召唤恐惧战马","召喚恐懼戰馬","призыв коня","призыв скакуна"}
   local _,playerClass=UnitClass("player")
   local seenSpell={}
   local highestByName={}
@@ -359,6 +404,7 @@ local function collect()
       local name=C_Spell.GetSpellName(spellID)
       local low=lowerText(name)
       local cat=isFormSpell(name,playerClass) and "forms" or nil
+      if not cat then for _,word in ipairs(mountSpells) do if low:find(word,1,true)==1 then cat="travel";break end end end
       if not cat then for _,word in ipairs(profession) do if low:find(word,1,true) then cat="profession";break end end end
       if not cat and isClassUtility(name) then cat="classskill" end
       if cat and EUB_DB.categories[cat] and not hidden["spell:"..low] then
@@ -382,6 +428,7 @@ local function collect()
    end
   end
  end
+ if EUB_DB.bestOnly then out=keepBest(out) end
  table.sort(out,function(a,b) if a.category~=b.category then
   local ai,bi=99,99;for i,v in ipairs(order) do if v==a.category then ai=i end;if v==b.category then bi=i end end
   return ai<bi end return (a.name or "")<(b.name or "") end)
@@ -578,9 +625,14 @@ updateVisuals=function()
  for _,b in ipairs(buttons) do
   if b:IsShown() and b.entry then
    -- Live bag count: also updates in combat, when the layout itself is frozen.
+   -- Used up during combat: the button can't be removed until combat ends, so dim it.
+   local empty=false
    if b.entry.type=="item" and not b.entry.inventorySlot then
     local n=itemCount(b.entry.id)
-    if n and not isSecret(n) and n~=b.lastCount then b.lastCount=n;b.count:SetText(n>1 and n or "") end
+    if n and not isSecret(n) then
+     if n~=b.lastCount then b.lastCount=n;b.count:SetText(n>1 and n or "") end
+     empty=(n==0)
+    end
    end
    local start,duration,enabled,secret=cooldownInfo(b.entry)
    local onCD=false
@@ -605,7 +657,7 @@ updateVisuals=function()
    end
    local usable,noResource=isUsable(b.entry)
    local active=activeFormSpell(b.entry)
-   local blocked=not usable and not onCD and not active
+   local blocked=(not usable and not onCD and not active) or empty
    -- Active stance: bright icon with a gold outline. Unavailable stances: muted.
    b.shade:SetAlpha(noResource and 0.75 or 0.52)
    b.shade:SetShown(blocked)
@@ -681,6 +733,18 @@ refresh=function()
  end
  end -- unified layout
  for i=index+1,#buttons do buttons[i]:Hide();buttons[i]:SetAttribute("type",nil);buttons[i].entry=nil;buttons[i].cooldown:Hide();buttons[i].shade:Hide();buttons[i].hideBtn:Hide();for _,edge in ipairs(buttons[i].activeEdges) do edge:Hide() end end
+ -- Re-anchor by the edge that should stay fixed, then resize.
+ local left,top,bottom=frame:GetLeft(),frame:GetTop(),frame:GetBottom()
+ if left and top and bottom then
+  frame:ClearAllPoints()
+  if EUB_DB.growUp then
+   frame:SetPoint("BOTTOMLEFT",UIParent,"BOTTOMLEFT",left,bottom)
+   EUB_DB.position={"BOTTOMLEFT","BOTTOMLEFT",left,bottom}
+  else
+   frame:SetPoint("TOPLEFT",UIParent,"BOTTOMLEFT",left,top)
+   EUB_DB.position={"TOPLEFT","BOTTOMLEFT",left,top}
+  end
+ end
  frame:SetSize(width,math.max(48,y+10,EUB_DB.manualHeight or 0))
  -- Frame alpha (opacity / mouseover fade) is driven by the OnUpdate fader below.
  -- Locked mode is a transparent overlay: icons and labels remain visible.
@@ -758,38 +822,47 @@ local function options()
   c:SetScript("OnClick",function(self) EUB_DB.categories[k]=self:GetChecked();refresh() end)
   categoryLabels[k]=t
  end
- local layoutHeading=section(ui("layout"),-270)
+ local layoutHeading=section(ui("layout"),-296)
  local mode=CreateFrame("CheckButton",nil,config,"UICheckButtonTemplate")
- mode:SetSize(26,26);mode:SetPoint("TOPLEFT",20,-297)
+ mode:SetSize(26,26);mode:SetPoint("TOPLEFT",20,-322)
  mode:SetChecked(EUB_DB.unified)
  local modeText=config:CreateFontString(nil,"OVERLAY","GameFontHighlight")
  modeText:SetPoint("LEFT",mode,"RIGHT",5,0);modeText:SetWidth(345);modeText:SetJustifyH("LEFT")
  modeText:SetText(ui("unified"))
  modeText:SetTextColor(0.88,0.89,0.87)
  mode:SetScript("OnClick",function(self) EUB_DB.unified=not not self:GetChecked();refresh() end)
- local languageHeading=section(ui("language"),-334)
+ local function optionCheck(key,y)
+  local c=CreateFrame("CheckButton",nil,config,"UICheckButtonTemplate")
+  c:SetSize(26,26);c:SetPoint("TOPLEFT",20,y);c:SetChecked(EUB_DB[key])
+  local t=config:CreateFontString(nil,"OVERLAY","GameFontHighlight")
+  t:SetPoint("LEFT",c,"RIGHT",5,0);t:SetWidth(345);t:SetJustifyH("LEFT");t:SetTextColor(0.88,0.89,0.87)
+  c:SetScript("OnClick",function(self) EUB_DB[key]=not not self:GetChecked();refresh() end)
+  return c,t
+ end
+ local bestCheck,bestText=optionCheck("bestOnly",-347)
+ local growCheck,growText=optionCheck("growUp",-372)
+ -- Language and spell-rank selectors share one row; their labels name them.
  local langBtn=CreateFrame("Button",nil,config,"BackdropTemplate")
- langBtn:SetPoint("TOPLEFT",20,-359);langBtn:SetSize(380,30)
+ langBtn:SetPoint("TOPLEFT",20,-406);langBtn:SetSize(187,29)
  langBtn:SetBackdrop({bgFile="Interface\\Buttons\\WHITE8X8",edgeFile="Interface\\Buttons\\WHITE8X8",edgeSize=1})
  langBtn:SetBackdropColor(0.12,0.15,0.17,0.96);langBtn:SetBackdropBorderColor(0.55,0.46,0.29,0.9)
  local langText=langBtn:CreateFontString(nil,"OVERLAY","GameFontHighlight")
- langText:SetPoint("CENTER");langText:SetWidth(360)
+ langText:SetPoint("CENTER");langText:SetWidth(177)
  local function languageLabel()
   for _,v in ipairs(languageOptions) do if v[1]==EUB_DB.language then return v[2] end end
   return "Auto"
  end
  langBtn:SetScript("OnEnter",function(self) self:SetBackdropBorderColor(0.90,0.73,0.43,1) end)
  langBtn:SetScript("OnLeave",function(self) self:SetBackdropBorderColor(0.55,0.46,0.29,0.9) end)
- local rankHeading=section(ui("spellRanks"),-398)
  local rankBtn=CreateFrame("Button",nil,config,"BackdropTemplate")
- rankBtn:SetPoint("TOPLEFT",20,-423);rankBtn:SetSize(380,29)
+ rankBtn:SetPoint("TOPLEFT",213,-406);rankBtn:SetSize(187,29)
  rankBtn:SetBackdrop({bgFile="Interface\\Buttons\\WHITE8X8",edgeFile="Interface\\Buttons\\WHITE8X8",edgeSize=1})
  rankBtn:SetBackdropColor(0.12,0.15,0.17,0.96);rankBtn:SetBackdropBorderColor(0.55,0.46,0.29,0.9)
  local rankText=rankBtn:CreateFontString(nil,"OVERLAY","GameFontHighlight")
- rankText:SetPoint("CENTER");rankText:SetWidth(360)
+ rankText:SetPoint("CENTER");rankText:SetWidth(177)
  rankBtn:SetScript("OnEnter",function(self) self:SetBackdropBorderColor(0.90,0.73,0.43,1) end)
  rankBtn:SetScript("OnLeave",function(self) self:SetBackdropBorderColor(0.55,0.46,0.29,0.9) end)
- local controlsHeading=section(ui("controls"),-462)
+ local controlsHeading=section(ui("controls"),-448)
  local function action(text,x,y,fn)
   local b=CreateFrame("Button",nil,config,"BackdropTemplate")
   b:SetSize(181,31);b:SetPoint("TOPLEFT",x,y)
@@ -828,22 +901,22 @@ local function options()
   return label,value
  end
  -- Explicit columns/size settings override a manually resized width.
- local sizeLabel,sizeValue=stepper(20,-490,function() return EUB_DB.size or 36 end,function(v) EUB_DB.size=v;EUB_DB.manualWidth=nil;refresh() end,24,64,2)
- local colsLabel,colsValue=stepper(210,-490,function() return EUB_DB.columns or 8 end,function(v) EUB_DB.columns=v;EUB_DB.manualWidth=nil;refresh() end,4,16,1)
+ local sizeLabel,sizeValue=stepper(20,-476,function() return EUB_DB.size or 36 end,function(v) EUB_DB.size=v;EUB_DB.manualWidth=nil;refresh() end,24,64,2)
+ local colsLabel,colsValue=stepper(210,-476,function() return EUB_DB.columns or 8 end,function(v) EUB_DB.columns=v;EUB_DB.manualWidth=nil;refresh() end,4,16,1)
  local function opacityPct() return math.floor((EUB_DB.opacity or 1)*100+0.5) end
- local alphaLabel,alphaValue=stepper(20,-524,opacityPct,function(v) EUB_DB.opacity=v/100 end,30,100,10)
+ local alphaLabel,alphaValue=stepper(20,-510,opacityPct,function(v) EUB_DB.opacity=v/100 end,30,100,10)
  local fadeCheck=CreateFrame("CheckButton",nil,config,"UICheckButtonTemplate")
- fadeCheck:SetSize(26,26);fadeCheck:SetPoint("TOPLEFT",210,-525)
+ fadeCheck:SetSize(26,26);fadeCheck:SetPoint("TOPLEFT",210,-511)
  fadeCheck:SetChecked(EUB_DB.fade)
  local fadeText=config:CreateFontString(nil,"OVERLAY","GameFontHighlight")
  fadeText:SetPoint("LEFT",fadeCheck,"RIGHT",4,0);fadeText:SetWidth(160);fadeText:SetJustifyH("LEFT");fadeText:SetTextColor(0.88,0.89,0.87)
  fadeCheck:SetScript("OnClick",function(self) EUB_DB.fade=not not self:GetChecked() end)
- local lockBtn,lockText=action(ui("lock"),20,-558,function() EUB_DB.locked=not EUB_DB.locked;refresh() end)
- local visBtn,visText=action(ui("show"),219,-558,function() EUB_DB.visible=not EUB_DB.visible;refresh() end)
- local expandBtn,expandText=action(ui("expand"),20,-593,function() for _,k in ipairs(order) do EUB_DB.collapsed[k]=false end;refresh() end)
- local collapseBtn,collapseText=action(ui("collapse"),219,-593,function() for _,k in ipairs(order) do EUB_DB.collapsed[k]=true end;refresh() end)
- local refreshBtn,refreshText=action(ui("refresh"),20,-628,function() refresh() end)
- local restoreBtn,restoreText=action(ui("restore"),219,-628,function()
+ local lockBtn,lockText=action(ui("lock"),20,-544,function() EUB_DB.locked=not EUB_DB.locked;refresh() end)
+ local visBtn,visText=action(ui("show"),219,-544,function() EUB_DB.visible=not EUB_DB.visible;refresh() end)
+ local expandBtn,expandText=action(ui("expand"),20,-579,function() for _,k in ipairs(order) do EUB_DB.collapsed[k]=false end;refresh() end)
+ local collapseBtn,collapseText=action(ui("collapse"),219,-579,function() for _,k in ipairs(order) do EUB_DB.collapsed[k]=true end;refresh() end)
+ local refreshBtn,refreshText=action(ui("refresh"),20,-614,function() refresh() end)
+ local restoreBtn,restoreText=action(ui("restore"),219,-614,function()
   EUB_DB.hidden={}
   refresh();updateLabels()
  end)
@@ -887,11 +960,13 @@ local function options()
  updateLabels=function()
   -- Subtitle is fitted below.
   fitText(categoryHeading,ui("categories"),375,13,10);fitText(layoutHeading,ui("layout"),375,13,10)
-  fitText(languageHeading,ui("language"),375,13,10);fitText(rankHeading,ui("spellRanks"),375,13,10);fitText(controlsHeading,ui("controls"),375,13,10)
+  fitText(controlsHeading,ui("controls"),375,13,10)
   for _,k in ipairs(order) do fitText(categoryLabels[k],groupLabel(k),150,12,9) end
   fitText(modeText,ui("unified"),340,12,9)
-  fitText(langText,ui("language").."  :  "..languageLabel().."  ▼",355,12,10)
-  fitText(rankText,ui("spellRanks").."  :  "..ui(EUB_DB.spellRanks=="all" and "allRanks" or "highestRank").."  ▼",355,12,10)
+  fitText(bestText,ui("bestOnly"),340,12,9);bestCheck:SetChecked(EUB_DB.bestOnly)
+  fitText(growText,ui("growUp"),340,12,9);growCheck:SetChecked(EUB_DB.growUp)
+  fitText(langText,ui("language")..": "..languageLabel().." ▼",177,12,9)
+  fitText(rankText,ui("spellRanks")..": "..ui(EUB_DB.spellRanks=="all" and "allRanks" or "highestRank").." ▼",177,12,9)
   fitText(donateText,ui("donate"),365,12,10);fitText(hint,ui("hint"),375,10,8)
   fitText(sub,ui("subtitle"),345,10,8)
   fitText(expandText,ui("expand"),171,12,9);fitText(collapseText,ui("collapse"),171,12,9);fitText(refreshText,ui("refresh"),171,12,9)

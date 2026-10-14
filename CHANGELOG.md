@@ -1,3 +1,10 @@
+## Unreleased (0.5.7 testing)
+- New: "Food, potions, bandages: best only" option — keeps the best usable item of each kind (healing potion, mana potion, food, drink, buff food); items above your level are skipped.
+- New: Travel group for hearthstones, mount items and mount summon spells.
+- New: "Grow upward" option, so a toolbar placed at the bottom of the screen extends upward.
+- New: items used up during combat are dimmed until the toolbar can update after combat.
+- Settings: language and spell-rank selectors share one row to make room for the new options.
+
 ## 0.5.6
 - Fix: engineering devices are now recognized (tooltip "Requires Engineering" or Devices subtype); explosives go to Bombs.
 - Fix: no Lua errors when the client returns protected (secret) cooldown or usability values in combat; the cooldown swipe is drawn from them directly.
